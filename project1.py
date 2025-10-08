@@ -46,16 +46,20 @@ def avg_mass(island_penguin_data):
         count += 1
     return "{:.2f}".format(total_mass / count)
 
-    
-
+def generate_report(species_proportions, avg_body_mass, island):
+    with open("Penguin_Report.txt", 'w', newline= '\n') as fhand:
+        report = f"Data for {island} island:\nSpecies breakdown: {species_proportions}\nAverage body mass: {avg_body_mass}"
+        fhand.write(report)
 
 
 def main():
-    penguins_loaded = load_penguins("penguins.csv")
-    penguins_isolated = isolate_island(penguins_loaded, "Dream")
+    file = "penguins.csv"
+    island = "Dream"
+    penguins_loaded = load_penguins(file)
+    penguins_isolated = isolate_island(penguins_loaded, island)
     prop = species_prop(penguins_isolated)
     mass = avg_mass(penguins_isolated)
-    print (prop, "\n", mass)
+    generate_report(prop, mass, island)
 
 if __name__ == "__main__":
     main()
