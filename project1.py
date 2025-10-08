@@ -6,6 +6,8 @@ Collaborators: None
 '''
 
 import csv
+import unittest
+
 def load_penguins(csvfile):
     with open(csvfile, newline = '') as penguinfile:
         readsv = csv.reader(penguinfile)
@@ -42,6 +44,8 @@ def avg_mass(island_penguin_data):
     total_mass = 0
     count = 0
     for penguin in island_penguin_data:
+        if penguin['body_mass_g'] == 'NA':
+            continue
         total_mass += float(penguin['body_mass_g'])
         count += 1
     return "{:.2f}".format(total_mass / count)
@@ -51,10 +55,19 @@ def generate_report(species_proportions, avg_body_mass, island):
         report = f"Data for {island} island:\nSpecies breakdown: {species_proportions}\nAverage body mass: {avg_body_mass}"
         fhand.write(report)
 
+class TestPenguins(unittest.TestCase):
+    def setUp(self):
+        self.file = "penguins.csv"
+        self.island = "Biscoe"
+        self.penguins_loaded = load_penguins(self.file)
+        self.penguins_isolated = isolate_island(self.penguins_loaded, self.island)
+    
+    def test_proportions(self):
+        self.assertEqual(species_prop(self.penguins_isolated), {'Adelie': '26.19%', 'Gentoo': '73.81%'})
 
 def main():
     file = "penguins.csv"
-    island = "Dream"
+    island = "Biscoe"
     penguins_loaded = load_penguins(file)
     penguins_isolated = isolate_island(penguins_loaded, island)
     prop = species_prop(penguins_isolated)
@@ -63,3 +76,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    unittest.main(verbosity=2)
