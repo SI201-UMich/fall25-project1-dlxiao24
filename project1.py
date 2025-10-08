@@ -9,8 +9,28 @@ import csv
 def load_penguins(csvfile):
     with open(csvfile, newline = '') as penguinfile:
         readsv = csv.reader(penguinfile)
-        for line in readsv:
-            print(line)
+        next(readsv)
+        penguin_data = []
+        for penguin in readsv:
+            d = {}
+            d['id'] = penguin[0]
+            d['species'] = penguin[1]
+            d['island'] = penguin[2]
+            d['bill_length_mm'] = penguin[3]
+            d['body_mass_g'] = penguin[6]
+            penguin_data.append(d)
+        return penguin_data
+    
+def isolate_island(penguin_data, island):
+    island_penguin_data = []
+    for penguin in penguin_data:
+        if penguin['island'] == island:
+            island_penguin_data.append(penguin)
+    return island_penguin_data
+
+
+
+
 
 def main():
     load_penguins("penguins.csv")
