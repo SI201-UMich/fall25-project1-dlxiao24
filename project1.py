@@ -9,28 +9,39 @@ import csv
 import unittest
 
 def load_penguins(csvfile):
-    with open(csvfile, newline = '') as penguinfile:
-        readsv = csv.reader(penguinfile)
-        next(readsv)
-        penguin_data = []
-        for penguin in readsv:
-            d = {}
-            d['id'] = penguin[0]
-            d['species'] = penguin[1]
-            d['island'] = penguin[2]
-            d['bill_length_mm'] = penguin[3]
-            d['body_mass_g'] = penguin[6]
-            penguin_data.append(d)
-        return penguin_data
+    try:
+        with open(csvfile, newline = '') as penguinfile:
+            readsv = csv.reader(penguinfile)
+            next(readsv)
+            penguin_data = []
+            for penguin in readsv:
+                d = {}
+                d['id'] = penguin[0]
+                d['species'] = penguin[1]
+                d['island'] = penguin[2]
+                d['bill_length_mm'] = penguin[3]
+                d['body_mass_g'] = penguin[6]
+                penguin_data.append(d)
+            return penguin_data
+    except:
+        print("File doesn't exist or was mispelled")
+        return None
     
 def isolate_island(penguin_data, island):
+    if penguin_data == None:
+        quit()
     island_penguin_data = []
     for penguin in penguin_data:
         if penguin['island'] == island:
             island_penguin_data.append(penguin)
+    if len(island_penguin_data) == 0:
+        print("That island doesn't exist!")
+        return None
     return island_penguin_data
 
 def species_prop(island_penguin_data):
+    if island_penguin_data == None:
+        quit()
     species_count = {}
     total = 0
     for penguin in island_penguin_data:
@@ -64,6 +75,15 @@ class TestPenguins(unittest.TestCase):
     
     def test_proportions(self):
         self.assertEqual(species_prop(self.penguins_isolated), {'Adelie': '26.19%', 'Gentoo': '73.81%'})
+    
+    def test_mass(self):
+        self.assertAlmostEqual(avg_mass(self.penguins_isolated), '4716.02')
+    
+    def test_bad_island(self):
+        self.assertEqual(isolate_island(self.penguins_loaded, "krakatoa"), None)
+
+    def test_bad_file(self):
+        self.assertEqual(load_penguins("virus.mp4"), None)
 
 def main():
     file = "penguins.csv"
