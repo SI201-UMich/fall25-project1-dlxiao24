@@ -36,8 +36,16 @@ def species_prop(island_penguin_data):
         total += 1 
     for key, value in species_count.items():
         species_count[key] = "{:.2%}".format(value / total)
-    print(species_count)
     return species_count
+
+def avg_mass(island_penguin_data):
+    total_mass = 0
+    count = 0
+    for penguin in island_penguin_data:
+        total_mass += float(penguin['body_mass_g'])
+        count += 1
+    return "{:.2f}".format(total_mass / count)
+
     
 
 
@@ -45,7 +53,9 @@ def species_prop(island_penguin_data):
 def main():
     penguins_loaded = load_penguins("penguins.csv")
     penguins_isolated = isolate_island(penguins_loaded, "Dream")
-    species_prop(penguins_isolated)
+    prop = species_prop(penguins_isolated)
+    mass = avg_mass(penguins_isolated)
+    print (prop, "\n", mass)
 
 if __name__ == "__main__":
     main()
